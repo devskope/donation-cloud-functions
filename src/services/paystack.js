@@ -5,6 +5,7 @@ const { amountToLowerDenomination, computePaystackFees } = require('../utils');
 const Authorization = `Bearer ${process.env.PAYSTACK_TEST_SECRET}`;
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
 
+const payStackGet = bent(PAYSTACK_BASE_URL, 'json', { Authorization });
 const payStackPost = bent(PAYSTACK_BASE_URL, 'json', 'POST', {
   Authorization
 });
@@ -17,6 +18,18 @@ exports.initializeTransaction = async payload => {
 
   try {
     response.data = await payStackPost('/transaction/initialize', payload);
+  } catch (error) {
+    response.error = await handlePaystackApiError(error);
+  }
+
+  return response;
+};
+
+exports.verifyTransaction = async reference => {
+  const response = { data: null, error: null };
+
+  try {
+    response.data = await payStackGet(`/transaction/verify/${reference}`);
   } catch (error) {
     response.error = await handlePaystackApiError(error);
   }
