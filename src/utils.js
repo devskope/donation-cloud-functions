@@ -13,3 +13,28 @@ exports.computePaystackFees = amount => {
   return Math.min(fee, feeCap);
 };
 
+exports.preflight = (req, res, methods = 'POST', origin = '*') => {
+  if (req.method === 'OPTIONS') {
+    this.setResponseHeaders(res, methods, origin);
+    return true;
+  }
+
+  this.setResponseHeaders(res, methods, origin);
+  return false;
+};
+
+exports.setResponseHeaders = (res, methods, origin) => {
+  res.set({
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': methods,
+    'Access-Control-Allow-Headers': 'content-type',
+  });
+};
+
+exports.errorResponse = (res, error, status = 500) => {
+  res.status(status).json({ error });
+};
+
+exports.successResponse = (res, data, status = 200) => {
+  res.status(status).json({ data });
+};
