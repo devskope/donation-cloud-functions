@@ -4,4 +4,5 @@ const functions = require('./functions');
 
 module.exports = {
   initTx: functions.initiateTransaction,
+  txCallback: functions.transactionCallback,
 };
